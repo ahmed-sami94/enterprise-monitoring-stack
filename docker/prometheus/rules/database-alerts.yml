@@ -1,0 +1,20 @@
+groups:
+  - name: database-alerts
+    rules:
+      - alert: MySQLTooManyConnections
+        expr: mysql_global_status_threads_connected > 150
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "MySQL connection count is high"
+          description: "MySQL has more than 150 connected threads on {{ $labels.instance }}."
+
+      - alert: SQLServerHighBatchRequests
+        expr: sqlserver_requests_batch_requests_sec > 10000
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "SQL Server batch requests are high"
+          description: "SQL Server batch requests/sec is high on {{ $labels.instance }}."

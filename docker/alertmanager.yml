@@ -1,0 +1,19 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: default-email
+  group_by: ['alertname', 'instance', 'severity']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+
+receivers:
+  - name: default-email
+    email_configs:
+      - to: monitoring-team@example.com
+        from: prometheus@example.com
+        smarthost: smtp.example.com:587
+        auth_username: prometheus@example.com
+        auth_password: CHANGE_ME
+        send_resolved: true

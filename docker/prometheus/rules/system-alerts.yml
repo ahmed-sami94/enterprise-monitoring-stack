@@ -1,0 +1,38 @@
+groups:
+  - name: system-alerts
+    rules:
+      - alert: InstanceDown
+        expr: up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Instance is down"
+          description: "{{ $labels.instance }} has not been scraped for more than 2 minutes."
+
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(cpu_usage_idle[5m])) * 100) > 85
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is above 85% on {{ $labels.instance }}."
+
+      - alert: HighMemoryUsage
+        expr: (1 - (mem_available / mem_total)) * 100 > 90
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is above 90% on {{ $labels.instance }}."
+
+      - alert: DiskAlmostFull
+        expr: (1 - (disk_free / disk_total)) * 100 > 90
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Disk usage critical"
+          description: "Disk usage is above 90% on {{ $labels.instance }} mount {{ $labels.path }}."
